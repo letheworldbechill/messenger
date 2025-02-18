@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privater Messenger</title>
+  <title>Farbiger Messenger</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Google Font für einen verspielten Look -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="chat-container">
     <header>
-      <h1>Bibernstrasse 20 Messenger</h1>
+      <h1>Farbiger Messenger</h1>
     </header>
     <ul id="messages"></ul>
     <form id="chat-form" action="">
@@ -17,64 +19,94 @@
       <button type="submit">Senden</button>
     </form>
   </div>
+  <!-- Socket.IO-Clientbibliothek -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io();
+    // Benutzername erfragen und im localStorage speichern
+    let username = localStorage.getItem('username');
+    if (!username) {
+      username = prompt("Bitte gib deinen Namen ein:", "Anonymous") || "Anonymous";
+      localStorage.setItem('username', username);
+    }
+
+    // Aufbau der Socket.IO-Verbindung unter Übergabe des Benutzernamens
+    const socket = io({
+      auth: { username }
+    });
+
     const form = document.getElementById('chat-form');
     const input = document.getElementById('m');
     const messages = document.getElementById('messages');
 
+    let myId = "";
+
+    socket.on('connect', () => {
+      myId = socket.id;
+    });
+
     // Funktion zum Anhängen einer Nachricht in die Nachrichtenliste
-    function appendMessage(msg) {
+    function appendMessage(data, type) {
       const item = document.createElement('li');
-      item.textContent = msg;
+      item.className = 'message ' + type;
+      const time = new Date(data.timestamp).toLocaleTimeString();
+      item.innerHTML = `<span class="msg-user">${data.username}:</span> <span class="msg-text">${data.message}</span> <span class="msg-time">${time}</span>`;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     }
 
-    // Speichert Nachrichten im localStorage
-    function saveMessage(msg) {
+    // Nachrichten im localStorage als Array von Objekten speichern
+    function saveMessage(data, type) {
       const stored = JSON.parse(localStorage.getItem('chatMessages')) || [];
-      stored.push(msg);
+      stored.push({ data, type });
       localStorage.setItem('chatMessages', JSON.stringify(stored));
     }
 
-    // Lädt Nachrichten aus dem localStorage und zeigt sie an
+    // Gespeicherte Nachrichten laden
     function loadMessages() {
       const stored = JSON.parse(localStorage.getItem('chatMessages')) || [];
-      stored.forEach(msg => appendMessage(msg));
+      stored.forEach(item => {
+        appendMessage(item.data, item.type);
+      });
     }
 
-    // Beim Laden der Seite alle gespeicherten Nachrichten anzeigen
     loadMessages();
 
-    // Anfrage an den Benutzer, Desktop-Benachrichtigungen zu erlauben
+    // Anfrage für Desktop-Benachrichtigungen
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
 
-    // Formular: Nachricht senden
-    form.addEventListener('submit', (e) => {
+    // Beim Absenden des Formulars Nachricht senden
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
       if (input.value) {
-        // Nachricht an den Server senden
+        // Eigene Nachricht wird sofort lokal angezeigt
+        const messageData = {
+          id: myId,
+          username: username,
+          message: input.value,
+          timestamp: new Date().toISOString()
+        };
+        appendMessage(messageData, 'self');
+        saveMessage(messageData, 'self');
         socket.emit('chat message', input.value);
-        // Eigene Nachricht sofort anzeigen
-        const myMsg = "Ich: " + input.value;
-        appendMessage(myMsg);
-        saveMessage(myMsg);
         input.value = '';
       }
     });
 
     // Empfangene Nachrichten verarbeiten
-    socket.on('chat message', (msg) => {
-      // Falls der Browser nicht im Fokus ist, eine Desktop-Benachrichtigung anzeigen
-      if (!document.hasFocus() && Notification.permission === "granted") {
-        new Notification("Neue Nachricht", { body: msg });
+    socket.on('chat message', function(data) {
+      // Unterscheidung eigener Nachrichten und fremder Nachrichten
+      const type = (data.id === myId) ? 'self' : 'other';
+      // Wenn es sich um eine fremde Nachricht handelt, anzeigen und speichern
+      if (data.id !== myId) {
+        appendMessage(data, type);
+        saveMessage(data, type);
       }
-      appendMessage(msg);
-      saveMessage(msg);
+      // Bei Fokusverlust Desktop-Benachrichtigung
+      if (!document.hasFocus() && Notification.permission === "granted") {
+        new Notification("Neue Nachricht von " + data.username, { body: data.message });
+      }
     });
   </script>
 </body>
