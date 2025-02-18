@@ -1,68 +1,90 @@
-/* public/style.css */
-
+/* Allgemeine Stile */
 body {
-  font-family: 'Dancing Script', cursive;
-  /* Floral-Hintergrundbild – hier wird ein zufälliges, blumiges Bild von Unsplash geladen */
-  background: url('https://source.unsplash.com/1600x900/?flowers,floral') no-repeat center center fixed;
-  background-size: cover;
+  font-family: 'Roboto', sans-serif;
+  background: #f0f0f0;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 .chat-container {
+  width: 90%;
   max-width: 600px;
-  margin: 50px auto;
-  background: rgba(255, 255, 255, 0.85); /* leicht transparenter Hintergrund für bessere Lesbarkeit */
+  background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
-  background: rgba(255, 182, 193, 0.8);  /* sanftes Rosa */
-  color: #fff;
-  padding: 15px;
+  background: #4CAF50;
+  color: white;
+  padding: 1rem;
   text-align: center;
 }
 
 #messages {
-  list-style: none;
-  padding: 20px;
-  height: 300px;
-  overflow-y: scroll;
+  list-style-type: none;
+  padding: 1rem;
   margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
-#messages li {
-  padding: 10px;
-  margin-bottom: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  border-left: 4px solid #ff69b4; /* Akzent in Hot Pink */
-  border-radius: 4px;
+.message {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 20px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.self {
+  background: #DCF8C6;
+  align-self: flex-end;
+}
+
+.other {
+  background: #E6E6E6;
+  align-self: flex-start;
 }
 
 #chat-form {
   display: flex;
-  padding: 10px;
+  padding: 0.5rem;
+  background: #f9f9f9;
+  border-top: 1px solid #ddd;
 }
 
-#chat-form input {
-  flex: 1;
-  padding: 10px;
+#message-input {
+  flex-grow: 1;
+  padding: 0.5rem;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-right: 10px;
+  border-radius: 20px;
+  margin-right: 0.5rem;
 }
 
-#chat-form button {
-  padding: 10px 20px;
-  background: #ff69b4;
-  color: #fff;
+#message-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+button {
+  background: #4CAF50;
+  color: white;
   border: none;
-  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
   cursor: pointer;
 }
 
-#chat-form button:hover {
-  background: #ff85c0;
-}
+button:hover {
+  background: #45A049
+::contentReference[oaicite:0]{index=0}
+ 
+
