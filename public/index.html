@@ -2,20 +2,20 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bibernstrasse 20 Messenger</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farbenfroher Chat</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Google Font für ein blumiges, verspieltes Design -->
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Google Font für ein ansprechendes Design -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="chat-container">
     <header>
-      <h1>Privater Messenger</h1>
+      <h1>Farbenfroher Chat</h1>
     </header>
     <ul id="messages"></ul>
     <form id="chat-form" action="">
-      <input id="m" autocomplete="off" placeholder="Nachricht eingeben...">
+      <input id="message-input" autocomplete="off" placeholder="Nachricht eingeben..." />
       <button type="submit">Senden</button>
     </form>
   </div>
@@ -24,58 +24,39 @@
   <script>
     const socket = io();
     const form = document.getElementById('chat-form');
-    const input = document.getElementById('m');
+    const input = document.getElementById('message-input');
     const messages = document.getElementById('messages');
+    const userId = socket.id;
 
-    // Funktion: Nachrichten in den Chat-Fenster anhängen
-    function appendMessage(msg) {
+    // Nachricht im Chat anzeigen
+    function appendMessage(msg, isOwnMessage) {
       const item = document.createElement('li');
-      item.textContent = msg;
+      item.textContent = msg.message;
+      item.classList.add('message');
+      if (isOwnMessage) {
+        item.classList.add('self');
+      } else {
+        item.classList.add('other');
+      }
       messages.appendChild(item);
-      window.scrollTo(0, document.body.scrollHeight);
+      messages.scrollTop = messages.scrollHeight;
     }
 
-    // Nachrichten im localStorage speichern
-    function saveMessage(msg) {
-      const stored = JSON.parse(localStorage.getItem('chatMessages')) || [];
-      stored.push(msg);
-      localStorage.setItem('chatMessages', JSON.stringify(stored));
-    }
-
-    // Bereits gespeicherte Nachrichten laden
-    function loadMessages() {
-      const stored = JSON.parse(localStorage.getItem('chatMessages')) || [];
-      stored.forEach(msg => appendMessage(msg));
-    }
-
-    // Gespeicherte Nachrichten beim Laden anzeigen
-    loadMessages();
-
-    // Desktop-Benachrichtigung anfragen
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
-
-    // Formular: Nachricht senden
-    form.addEventListener('submit', function(e) {
+    // Formular absenden
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (input.value) {
+        const message = { id: socket.id, message: input.value };
+        appendMessage(message, true);
         socket.emit('chat message', input.value);
-        const myMsg = "Ich: " + input.value;
-        appendMessage(myMsg);
-        saveMessage(myMsg);
         input.value = '';
       }
     });
 
-    // Empfangene Nachrichten verarbeiten
-    socket.on('chat message', function(msg) {
-      // Desktop-Benachrichtigung, wenn das Fenster nicht fokussiert ist
-      if (!document.hasFocus() && Notification.permission === "granted") {
-        new Notification("Neue Nachricht", { body: msg });
-      }
-      appendMessage(msg);
-      saveMessage(msg);
+    // Nachricht vom Server empfangen
+    socket.on('chat message', (msg) => {
+      const isOwnMessage = msg.id === socket.id;
+      appendMessage(msg, isOwnMessage);
     });
   </script>
 </body>
