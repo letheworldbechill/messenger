@@ -1,13 +1,21 @@
-/* Allgemeine Stile */
-body {
-  font-size: 1.2em;           /* Erhöhte Schriftgröße */
-  line-height: 1.6;         /* Mehr Zeilenabstand */
-  font-family: Arial, sans-serif; /* Gut lesbare Schrift */
-  color: #000;              /* Schwarze Schriftfarbe */
-  background-color: #fff;   /* Weißer Hintergrund */
+/* CSS-Einstellungen für Schriftgröße und Rahmenfarben */
+:root {
+  --message-font-size: 1.2em;    /* Schriftgröße für Nachrichten */
+  --input-font-size: 1.4em;      /* Schriftgröße für die Eingabe */
+  --button-font-size: 1.4em;     /* Schriftgröße für den Senden-Knopf */
+  --self-border-color: #2e7d32;  /* Rahmenfarbe für eigene Nachrichten (Grün) */
+  --other-border-color: #81d4fa; /* Rahmenfarbe für Nachrichten anderer (Hellblau) */
 }
 
-
+/* Allgemeine Stile */
+body {
+  font-family: 'Dancing Script', cursive;
+  /* Hintergrundbild aus dem public-Ordner verwenden */
+  background: url('background.webp') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+}
 
 /* Chat-Container */
 .chat-container {
@@ -19,7 +27,7 @@ body {
   overflow: hidden;
 }
 
-/* Header */
+/* Header (unverändert) */
 header {
   background: linear-gradient(135deg, #388e3c 0%, #66bb6a 100%);
   color: #fff;
@@ -48,24 +56,24 @@ header {
   font-size: var(--message-font-size);
 }
 
-/* Eigene Nachrichten (rechts) */
+/* Eigene Nachrichten (rechts) mit weiß-grünem Hintergrund */
 .message.self {
-  background: linear-gradient(135deg, #1b5e20 0%, #43a047 100%);
-  color: white;
+  background: #e8f5e9;
+  color: #1b5e20;
   margin-left: auto;
   text-align: right;
-  border-color: #2e7d32;
-  border-bottom-right-radius: 0.5;
+  border: 2px solid var(--self-border-color);
+  border-bottom-right-radius: 0;
 }
 
-/* Nachrichten anderer Nutzer (links) */
+/* Nachrichten anderer Nutzer (links) mit weiß-blauem Hintergrund */
 .message.other {
-  background: linear-gradient(135deg, #a5d6a7 0%, #c8e6c9 100%);
-  color: black;
+  background: #e3f2fd;
+  color: #0d47a1;
   margin-right: auto;
   text-align: left;
-  border-color: #81d4fa;
-  border-bottom-left-radius: 0.5;
+  border: 2px solid var(--other-border-color);
+  border-bottom-left-radius: 0;
 }
 
 /* Stile für Nachrichtenelemente */
@@ -91,6 +99,7 @@ header {
   border: 1px solid #ddd;
   border-radius: 20px;
   margin-right: 10px;
+  font-size: var(--input-font-size);
 }
 
 #chat-form button {
@@ -100,6 +109,7 @@ header {
   border: none;
   border-radius: 20px;
   cursor: pointer;
+  font-size: var(--button-font-size);
 }
 
 #chat-form button:hover {
