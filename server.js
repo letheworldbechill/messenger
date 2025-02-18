@@ -21,8 +21,8 @@ io.on('connection', (socket) => {
   });
 });
 
-// Server startet auf Port 3000 oder dem in der Umgebungsvariable angegebenen Port
-const PORT = process.env.PORT || 3000;
+// Server startet auf Port 5500 oder dem in der Umgebungsvariable angegebenen Port
+const PORT = process.env.PORT || 5500;
 http.listen(PORT, () => {
   console.log(`Server läuft auf Port ${PORT}`);
 });
