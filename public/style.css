@@ -116,9 +116,9 @@ header {
   background: #388e3c;
 }
 
-/* Mobile-Anpassung: Hintergrund auf hellblau-weiß */
+/* Mobile-Anpassung: Hintergrund bleibt das Bild, Chat-Container transparenter */
 @media (max-width: 600px) {
-  body {
-    background: linear-gradient(135deg, #e1f5fe 0%, #ffffff 100%);
+  .chat-container {
+    background: rgba(255, 255, 255, 0.7);
   }
 }
