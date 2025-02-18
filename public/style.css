@@ -1,7 +1,13 @@
+/* Einstellungen für Schriftgröße und Rahmenfarben */
+:root {
+  --message-font-size: 1.5em;    /* Schriftgröße für Nachrichten – hier kannst du den Wert anpassen */
+  --self-border-color: #2e7d32;  /* Rahmenfarbe für eigene Nachrichten (Grün) */
+  --other-border-color: #81d4fa; /* Rahmenfarbe für Nachrichten anderer (Hellblau) */
+}
+
 /* Allgemeine Stile */
 body {
   font-family: 'Dancing Script', cursive;
-  /* Grundhintergrund in grünen Tönen */
   background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
   margin: 0;
   padding: 0;
@@ -43,8 +49,7 @@ header {
   word-wrap: break-word;
   position: relative;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-  /* Verdoppelte Schriftgröße */
-  font-size: 2em;
+  font-size: var(--message-font-size);
 }
 
 /* Eigene Nachrichten (rechts) */
@@ -53,6 +58,7 @@ header {
   color: white;
   margin-left: auto;
   text-align: right;
+  border: 2px solid var(--self-border-color);
   border-bottom-right-radius: 0;
 }
 
@@ -62,6 +68,7 @@ header {
   color: black;
   margin-right: auto;
   text-align: left;
+  border: 2px solid var(--other-border-color);
   border-bottom-left-radius: 0;
 }
 
