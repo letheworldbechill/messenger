@@ -3,23 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>private-messenger</title>
+  <title>Privater Messenger</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Google Font für einen verspielten Look -->
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="chat-container">
     <header>
-      <h1>Bibernstrasse 20 Messenger</h1>
+      <h1>Privater Messenger</h1>
     </header>
     <ul id="messages"></ul>
     <form id="chat-form" action="">
-      <input id="m" autocomplete="off" placeholder="Nachricht eingeben...">
+      <input id="m" autocomplete="off" placeholder="Nachricht eingeben..." />
       <button type="submit">Senden</button>
     </form>
   </div>
-  <!-- Socket.IO-Clientbibliothek -->
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
@@ -27,71 +24,59 @@
     const input = document.getElementById('m');
     const messages = document.getElementById('messages');
 
-    let myId = '';
-
-    // Beim Verbinden die eigene Socket-ID speichern
-    socket.on('connect', () => {
-      myId = socket.id;
-    });
-
     // Funktion zum Anhängen einer Nachricht in die Nachrichtenliste
-    function appendMessage(msg, type) {
+    function appendMessage(msg) {
       const item = document.createElement('li');
-      // Vergibt je nach Typ (self/other) unterschiedliche Klassen
-      item.className = 'message ' + type;
       item.textContent = msg;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
     }
 
     // Speichert Nachrichten im localStorage
-    function saveMessage(msg, type) {
+    function saveMessage(msg) {
       const stored = JSON.parse(localStorage.getItem('chatMessages')) || [];
-      stored.push({ msg, type });
+      stored.push(msg);
       localStorage.setItem('chatMessages', JSON.stringify(stored));
     }
 
-    // Lädt gespeicherte Nachrichten und zeigt sie an
+    // Lädt Nachrichten aus dem localStorage und zeigt sie an
     function loadMessages() {
       const stored = JSON.parse(localStorage.getItem('chatMessages')) || [];
-      stored.forEach(item => appendMessage(item.msg, item.type));
+      stored.forEach(msg => appendMessage(msg));
     }
 
-    // Gespeicherte Nachrichten beim Laden anzeigen
+    // Beim Laden der Seite alle gespeicherten Nachrichten anzeigen
     loadMessages();
 
-    // Desktop-Benachrichtigung anfragen
+    // Anfrage an den Benutzer, Desktop-Benachrichtigungen zu erlauben
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
 
-    // Beim Absenden des Formulars Nachricht senden
-    form.addEventListener('submit', function(e) {
+    // Formular: Nachricht senden
+    form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (input.value) {
-        // Eigene Nachricht kennzeichnen
-        const myMsg = "Ich: " + input.value;
-        appendMessage(myMsg, 'self');
-        saveMessage(myMsg, 'self');
+        // Nachricht an den Server senden
         socket.emit('chat message', input.value);
+        // Eigene Nachricht sofort anzeigen
+        const myMsg = "Ich: " + input.value;
+        appendMessage(myMsg);
+        saveMessage(myMsg);
         input.value = '';
       }
     });
 
     // Empfangene Nachrichten verarbeiten
-    socket.on('chat message', function(data) {
-      // Bestimme, ob die Nachricht vom eigenen Client stammt
-      const type = (data.id === myId) ? 'self' : 'other';
-      // Verhindere doppelte Anzeige eigener Nachrichten (da diese schon lokal angezeigt wurden)
-      if (data.id !== myId) {
-        appendMessage(data.message, type);
-        saveMessage(data.message, type);
-      }
-      // Wenn das Fenster nicht im Fokus ist, Desktop-Benachrichtigung anzeigen
+    socket.on('chat message', (msg) => {
+      // Falls der Browser nicht im Fokus ist, eine Desktop-Benachrichtigung anzeigen
       if (!document.hasFocus() && Notification.permission === "granted") {
-        new Notification("Neue Nachricht", { body: data.message });
+        new Notification("Neue Nachricht", { body: msg });
       }
+      appendMessage(msg);
+      saveMessage(msg);
     });
   </script>
 </body>
 </html>
+
