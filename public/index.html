@@ -2,20 +2,20 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Farbenfroher Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Farbiger Messenger</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Google Font für ein ansprechendes Design -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Google Font für einen verspielten Look -->
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="chat-container">
     <header>
-      <h1>Bibernstrasse 20 Chat</h1>
+      <h1>Farbiger Messenger</h1>
     </header>
     <ul id="messages"></ul>
     <form id="chat-form" action="">
-      <input id="message-input" autocomplete="off" placeholder="Nachricht eingeben..." />
+      <input id="m" autocomplete="off" placeholder="Nachricht eingeben...">
       <button type="submit">Senden</button>
     </form>
   </div>
@@ -24,39 +24,73 @@
   <script>
     const socket = io();
     const form = document.getElementById('chat-form');
-    const input = document.getElementById('message-input');
+    const input = document.getElementById('m');
     const messages = document.getElementById('messages');
-    const userId = socket.id;
 
-    // Nachricht im Chat anzeigen
-    function appendMessage(msg, isOwnMessage) {
+    let myId = '';
+
+    // Beim Verbinden die eigene Socket-ID speichern
+    socket.on('connect', () => {
+      myId = socket.id;
+    });
+
+    // Funktion zum Anhängen einer Nachricht in die Nachrichtenliste
+    function appendMessage(msg, type) {
       const item = document.createElement('li');
-      item.textContent = msg.message;
-      item.classList.add('message');
-      if (isOwnMessage) {
-        item.classList.add('self');
-      } else {
-        item.classList.add('other');
-      }
+      // Vergibt je nach Typ (self/other) unterschiedliche Klassen
+      item.className = 'message ' + type;
+      item.textContent = msg;
       messages.appendChild(item);
-      messages.scrollTop = messages.scrollHeight;
+      window.scrollTo(0, document.body.scrollHeight);
     }
 
-    // Formular absenden
-    form.addEventListener('submit', (e) => {
+    // Speichert Nachrichten im localStorage
+    function saveMessage(msg, type) {
+      const stored = JSON.parse(localStorage.getItem('chatMessages')) || [];
+      stored.push({ msg, type });
+      localStorage.setItem('chatMessages', JSON.stringify(stored));
+    }
+
+    // Lädt gespeicherte Nachrichten und zeigt sie an
+    function loadMessages() {
+      const stored = JSON.parse(localStorage.getItem('chatMessages')) || [];
+      stored.forEach(item => appendMessage(item.msg, item.type));
+    }
+
+    // Gespeicherte Nachrichten beim Laden anzeigen
+    loadMessages();
+
+    // Desktop-Benachrichtigung anfragen
+    if (Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+
+    // Beim Absenden des Formulars Nachricht senden
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
       if (input.value) {
-        const message = { id: socket.id, message: input.value };
-        appendMessage(message, true);
+        // Eigene Nachricht kennzeichnen
+        const myMsg = "Ich: " + input.value;
+        appendMessage(myMsg, 'self');
+        saveMessage(myMsg, 'self');
         socket.emit('chat message', input.value);
         input.value = '';
       }
     });
 
-    // Nachricht vom Server empfangen
-    socket.on('chat message', (msg) => {
-      const isOwnMessage = msg.id === socket.id;
-      appendMessage(msg, isOwnMessage);
+    // Empfangene Nachrichten verarbeiten
+    socket.on('chat message', function(data) {
+      // Bestimme, ob die Nachricht vom eigenen Client stammt
+      const type = (data.id === myId) ? 'self' : 'other';
+      // Verhindere doppelte Anzeige eigener Nachrichten (da diese schon lokal angezeigt wurden)
+      if (data.id !== myId) {
+        appendMessage(data.message, type);
+        saveMessage(data.message, type);
+      }
+      // Wenn das Fenster nicht im Fokus ist, Desktop-Benachrichtigung anzeigen
+      if (!document.hasFocus() && Notification.permission === "granted") {
+        new Notification("Neue Nachricht", { body: data.message });
+      }
     });
   </script>
 </body>
