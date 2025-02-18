@@ -55,7 +55,7 @@ header {
   margin-left: auto;
   text-align: right;
   border-color: #2e7d32;
-  border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0.5;
 }
 
 /* Nachrichten anderer Nutzer (links) */
@@ -65,7 +65,7 @@ header {
   margin-right: auto;
   text-align: left;
   border-color: #81d4fa;
-  border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0.5;
 }
 
 /* Stile für Nachrichtenelemente */
