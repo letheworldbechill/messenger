@@ -62,6 +62,16 @@ header {
   border-bottom-left-radius: 0;
 }
 
+/* Stile für Nachrichtenelemente */
+.msg-user {
+  font-weight: bold;
+}
+.msg-time {
+  font-size: 0.8em;
+  color: #555;
+  margin-left: 10px;
+}
+
 /* Formular */
 #chat-form {
   display: flex;
