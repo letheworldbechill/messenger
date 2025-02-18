@@ -43,6 +43,8 @@ header {
   word-wrap: break-word;
   position: relative;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+  /* Verdoppelte Schriftgröße */
+  font-size: 2em;
 }
 
 /* Eigene Nachrichten (rechts) */
