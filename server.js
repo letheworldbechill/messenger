@@ -22,7 +22,7 @@ io.on('connection', (socket) => {
 });
 
 // Server startet auf Port 5500
-const PORT = process.env.PORT || 5500;
+const PORT = process.env.PORT || 5501;
 http.listen(PORT, () => {
   console.log(`Server läuft auf Port ${PORT}`);
 });
