@@ -1,6 +1,6 @@
 /* Einstellungen für Schriftgröße und Rahmenfarben */
 :root {
-  --message-font-size: 1.5em;    /* Schriftgröße für Nachrichten – hier kannst du den Wert anpassen */
+  --message-font-size: 2.5em;    /* Schriftgröße für Nachrichten – hier kannst du den Wert anpassen */
   --self-border-color: #2e7d32;  /* Rahmenfarbe für eigene Nachrichten (Grün) */
   --other-border-color: #81d4fa; /* Rahmenfarbe für Nachrichten anderer (Hellblau) */
 }
