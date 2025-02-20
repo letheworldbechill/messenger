@@ -30,7 +30,7 @@ header {
   color: #4CAF50;
   padding: 10px;
   text-align: center;
-  font-size: 1.8em; /* Reduzierte Schriftgröße */
+  font-size: 1.8em;
 }
 
 /* Nachrichtenliste mit verdoppelter Schriftgröße */
@@ -98,11 +98,33 @@ header {
   background-color: #45a049;
 }
 
-/* Mobile Ansicht: Hintergrund wird gezoomt (Fokus auf rechte Seite) */
+/* Verbesserte mobile Ansicht */
 @media (max-width: 768px) {
+  .chat-container {
+    max-width: 90%;
+    margin: 20px auto;
+    gap: 5px;
+  }
+  header {
+    font-size: 1.5em;
+    padding: 8px;
+  }
+  #messages {
+    padding: 10px;
+    font-size: 1.5em;
+  }
+  #chat-form input {
+    padding: 10px;
+    font-size: 1.5em;
+  }
+  #chat-form button {
+    padding: 10px 15px;
+    font-size: 1.5em;
+  }
+  /* Für mobile Geräte anstatt "right center" evtl. mittig, falls es besser aussieht */
   body {
-    background-size: 150% auto;
-    background-position: right center;
+    background-size: cover;
+    background-position: center;
   }
 }
 
