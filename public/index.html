@@ -1,108 +1,107 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gruppenchat Messenger</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="chat-container">
-    <header>
-      <h1>Biberästrass 20 Chat</h1>
-    </header>
-    <ul id="messages"></ul>
-    <form id="chat-form">
-      <input id="messageInput" autocomplete="off" placeholder="Deine Nachricht..." />
-      <button type="submit">Senden</button>
-    </form>
-  </div>
+/* Globaler Hintergrund mit background.webp */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
+  background-image: url('background.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: right center;
+}
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    let mySocketId = null;
-    const messagesList = document.getElementById('messages');
-    const form = document.getElementById('chat-form');
-    const messageInput = document.getElementById('messageInput');
+/* Chat-Container mit höherer Transparenz */
+.chat-container {
+  max-width: 700px;
+  margin: 40px auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background-color: rgba(255, 255, 255, 0.5); /* 50% Deckkraft */
+}
 
-    // Anfrage für Desktop-Benachrichtigungen (nur einmal, falls noch nicht erlaubt)
-    if (Notification.permission !== "granted") {
-      Notification.requestPermission();
-    }
+/* Header transparent, grüne Schrift, verdoppelte Schriftgröße */
+header {
+  background-color: transparent;
+  color: #4CAF50;
+  padding: 20px;
+  text-align: center;
+  font-size: 3em; /* ursprünglich 1.5em, jetzt doppelt */
+}
 
-    // Eigene Socket-ID speichern
-    socket.on('connect', () => {
-      mySocketId = socket.id;
-      console.log("Verbunden mit Socket-ID: " + mySocketId);
-    });
+/* Nachrichtenliste mit verdoppelter Schriftgröße */
+#messages {
+  list-style: none;
+  margin: 0;
+  padding: 20px;
+  height: 400px;
+  overflow-y: auto;
+  font-size: 2em; /* Verdoppelte Schriftgröße für Nachrichten */
+}
 
-    // Funktion zum Speichern einer Nachricht im localStorage
-    function saveMessage(data) {
-      let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-      messages.push(data);
-      localStorage.setItem('chatMessages', JSON.stringify(messages));
-    }
+/* Nachrichten ohne farbigen Hintergrund (transparent) */
+#messages li {
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  line-height: 1.4em;
+  background-color: transparent;
+}
 
-    // Gespeicherte Nachrichten laden
-    function loadMessages() {
-      let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-      messages.forEach(data => appendMessage(data));
-    }
+/* Eigene Nachrichten – rechtsbündig, kein zusätzlicher Hintergrund */
+.my-message {
+  text-align: right;
+  background-color: transparent;
+}
 
-    // Eine Nachricht in die Nachrichtenliste einfügen
-    function appendMessage(data) {
-      const li = document.createElement('li');
-      if (data.senderId === mySocketId) {
-        li.classList.add('my-message');
-        li.textContent = "Ich: " + data.message;
-      } else {
-        li.classList.add('other-message');
-        li.textContent = data.message;
-        // Nur für Nachrichten von anderen: Bei fehlendem Fokus Desktop-Benachrichtigung
-        if (!document.hasFocus() && Notification.permission === "granted") {
-          new Notification("Neue Nachricht", { body: data.message });
-        }
-      }
-      if (data.timestamp) {
-        const timeSpan = document.createElement('span');
-        timeSpan.classList.add('timestamp');
-        const d = new Date(data.timestamp);
-        timeSpan.textContent = " (" + d.toLocaleTimeString() + ")";
-        li.appendChild(timeSpan);
-      }
-      messagesList.appendChild(li);
-      window.scrollTo(0, document.body.scrollHeight);
-    }
+/* Nachrichten von anderen – linksbündig, transparent */
+.other-message {
+  text-align: left;
+  background-color: transparent;
+}
 
-    // Nachrichten aus localStorage beim Laden anzeigen
-    window.onload = loadMessages;
+/* Zeitstempel bleibt unverändert */
+.timestamp {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: 8px;
+}
 
-    // Beim Abschicken des Formulars Nachricht versenden
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const text = messageInput.value.trim();
-      if (text === "") return;
-      const messageData = {
-        senderId: mySocketId,
-        message: text,
-        timestamp: Date.now()
-      };
-      // Sende Nachricht an den Server
-      socket.emit('chat message', messageData);
-      // Eigene Nachricht direkt anzeigen (keine Doppelanzeige, weil wir sie hier einfügen)
-      appendMessage(messageData);
-      saveMessage(messageData);
-      messageInput.value = '';
-    });
+/* Chat-Formular */
+#chat-form {
+  display: flex;
+  border-top: 1px solid #ddd;
+}
 
-    // Beim Empfang einer Nachricht vom Server
-    socket.on('chat message', (data) => {
-      // Eigene Nachricht wurde bereits angezeigt – überspringe sie
-      if (data.senderId === mySocketId) return;
-      appendMessage(data);
-      saveMessage(data);
-    });
-  </script>
-</body>
-</html>
+/* Nachrichteneingabefeld mit verdoppelter Schriftgröße */
+#chat-form input {
+  flex: 1;
+  border: none;
+  padding: 15px;
+  font-size: 2em;
+  outline: none;
+}
+
+/* Senden-Button mit verdoppelter Schriftgröße */
+#chat-form button {
+  border: none;
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 15px 20px;
+  font-size: 2em;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+#chat-form button:hover {
+  background-color: #45a049;
+}
+
+/* Mobile Ansicht: Hintergrund wird gezoomt (Fokus auf rechte Seite) */
+@media (max-width: 768px) {
+  body {
+    background-size: 150% auto;
+    background-position: right center;
+  }
+}
