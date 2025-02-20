@@ -1,124 +1,84 @@
-/* CSS-Einstellungen für Schriftgröße und Rahmenfarben */
-:root {
-  --message-font-size: 1.2em;    /* Schriftgröße für Nachrichten */
-  --input-font-size: 1.4em;      /* Schriftgröße für die Eingabe */
-  --button-font-size: 1.4em;     /* Schriftgröße für den Senden-Knopf */
-  --self-border-color: #2e7d32;  /* Rahmenfarbe für eigene Nachrichten (Grün) */
-  --other-border-color: #81d4fa; /* Rahmenfarbe für Nachrichten anderer (Hellblau) */
-}
-
-/* Allgemeine Stile */
+/* Weißer Hintergrund, grüne Akzente */
 body {
-  font-family: 'Dancing Script', cursive;
-  /* Hintergrundbild aus dem public-Ordner verwenden */
-  background: url('background.webp') no-repeat center center fixed;
-  background-size: cover;
   margin: 0;
   padding: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
 }
 
-/* Chat-Container */
 .chat-container {
-  max-width: 600px;
-  margin: 50px auto;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  max-width: 700px;
+  margin: 40px auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
 }
 
-/* Header (unverändert) */
 header {
-  background: linear-gradient(135deg, #388e3c 0%, #66bb6a 100%);
+  background-color: #4CAF50;
   color: #fff;
-  padding: 15px;
+  padding: 20px;
   text-align: center;
+  font-size: 1.5em;
 }
 
-/* Nachrichtenliste */
 #messages {
   list-style: none;
-  padding: 20px;
   margin: 0;
+  padding: 20px;
   height: 400px;
   overflow-y: auto;
 }
 
-/* Gemeinsamer Nachrichten-Stil */
-.message {
-  padding: 10px 15px;
+#messages li {
+  padding: 10px;
   margin-bottom: 10px;
-  border-radius: 20px;
-  max-width: 75%;
-  word-wrap: break-word;
-  position: relative;
-  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
-  font-size: var(--message-font-size);
+  border-radius: 4px;
+  font-size: 1em;
+  line-height: 1.4em;
 }
 
-/* Eigene Nachrichten (rechts) mit weiß-grünem Hintergrund */
-.message.self {
-  background: #e8f5e9;
-  color: #1b5e20;
-  margin-left: auto;
+.my-message {
+  background-color: #dcf8c6; /* Hellgrün für eigene Nachrichten */
   text-align: right;
-  border: 2px solid var(--self-border-color);
-  border-bottom-right-radius: 0;
 }
 
-/* Nachrichten anderer Nutzer (links) mit weiß-blauem Hintergrund */
-.message.other {
-  background: #e3f2fd;
-  color: #0d47a1;
-  margin-right: auto;
+.other-message {
+  background-color: #f9f9f9; /* Heller Hintergrund für Nachrichten von anderen */
   text-align: left;
-  border: 2px solid var(--other-border-color);
-  border-bottom-left-radius: 0;
 }
 
-/* Stile für Nachrichtenelemente */
-.msg-user {
-  font-weight: bold;
-}
-.msg-time {
+.timestamp {
   font-size: 0.8em;
-  color: #555;
-  margin-left: 10px;
+  color: #666;
+  margin-left: 8px;
 }
 
-/* Formular */
 #chat-form {
   display: flex;
-  padding: 10px;
   border-top: 1px solid #ddd;
 }
 
 #chat-form input {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  margin-right: 10px;
-  font-size: var(--input-font-size);
+  border: none;
+  padding: 15px;
+  font-size: 1em;
+  outline: none;
 }
 
 #chat-form button {
-  padding: 10px 20px;
-  background: #2e7d32;
-  color: white;
   border: none;
-  border-radius: 20px;
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 15px 20px;
+  font-size: 1em;
   cursor: pointer;
-  font-size: var(--button-font-size);
+  transition: background-color 0.2s ease-in-out;
 }
 
 #chat-form button:hover {
-  background: #388e3c;
-}
-
-/* Mobile-Anpassung: Hintergrund bleibt das Bild, Chat-Container transparenter */
-@media (max-width: 600px) {
-  .chat-container {
-    background: rgba(255, 255, 255, 0.7);
-  }
+  background-color: #45a049;
 }
