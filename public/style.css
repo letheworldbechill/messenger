@@ -10,24 +10,27 @@ body {
   background-position: right center;
 }
 
-/* Chat-Container mit höherer Transparenz */
+/* Chat-Container als Grid */
 .chat-container {
   max-width: 700px;
   margin: 40px auto;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   background-color: rgba(255, 255, 255, 0.5); /* 50% Deckkraft */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-/* Header transparent, grüne Schrift, verdoppelte Schriftgröße */
+/* Header transparent, grüne Schrift, verkleinerte Überschrift */
 header {
   background-color: transparent;
   color: #4CAF50;
-  padding: 20px;
+  padding: 10px;
   text-align: center;
-  font-size: 3em;
+  font-size: 1.8em; /* Reduzierte Schriftgröße */
 }
 
 /* Nachrichtenliste mit verdoppelter Schriftgröße */
@@ -35,12 +38,11 @@ header {
   list-style: none;
   margin: 0;
   padding: 20px;
-  height: 400px;
   overflow-y: auto;
   font-size: 2em;
 }
 
-/* Nachrichten ohne farbigen Hintergrund (transparent) */
+/* Nachrichten ohne farbigen Hintergrund */
 #messages li {
   padding: 10px;
   margin-bottom: 10px;
@@ -52,13 +54,11 @@ header {
 /* Eigene Nachrichten – rechtsbündig */
 .my-message {
   text-align: right;
-  background-color: transparent;
 }
 
 /* Nachrichten von anderen – linksbündig */
 .other-message {
   text-align: left;
-  background-color: transparent;
 }
 
 /* Zeitstempel */
@@ -105,3 +105,4 @@ header {
     background-position: right center;
   }
 }
+
