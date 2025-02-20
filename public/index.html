@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gruppenchat Messenger</title>
+  <title>Biberästrass 20 Chat</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="chat-container">
     <header>
-      <h1>Gruppenchat Messenger</h1>
+      <h1>Biberästrass 20 Chat.</h1>
     </header>
     <ul id="messages"></ul>
     <form id="chat-form">
@@ -26,7 +26,7 @@
     const form = document.getElementById('chat-form');
     const messageInput = document.getElementById('messageInput');
 
-    // Anfrage für Desktop-Benachrichtigungen (nur einmal, falls noch nicht erlaubt)
+    // Anfrage für Desktop-Benachrichtigungen (falls noch nicht erlaubt)
     if (Notification.permission !== "granted") {
       Notification.requestPermission();
     }
@@ -37,20 +37,20 @@
       console.log("Verbunden mit Socket-ID: " + mySocketId);
     });
 
-    // Funktion zum Speichern einer Nachricht im localStorage
+    // Speichert Nachrichten im localStorage
     function saveMessage(data) {
       let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
       messages.push(data);
       localStorage.setItem('chatMessages', JSON.stringify(messages));
     }
 
-    // Gespeicherte Nachrichten laden
+    // Lädt und zeigt gespeicherte Nachrichten an
     function loadMessages() {
       let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
       messages.forEach(data => appendMessage(data));
     }
 
-    // Eine Nachricht in die Nachrichtenliste einfügen
+    // Fügt eine Nachricht der Nachrichtenliste hinzu
     function appendMessage(data) {
       const li = document.createElement('li');
       if (data.senderId === mySocketId) {
@@ -59,7 +59,7 @@
       } else {
         li.classList.add('other-message');
         li.textContent = data.message;
-        // Nur für Nachrichten von anderen: Bei fehlendem Fokus Desktop-Benachrichtigung
+        // Desktop-Benachrichtigung nur für Nachrichten anderer
         if (!document.hasFocus() && Notification.permission === "granted") {
           new Notification("Neue Nachricht", { body: data.message });
         }
@@ -75,10 +75,10 @@
       window.scrollTo(0, document.body.scrollHeight);
     }
 
-    // Nachrichten aus localStorage beim Laden anzeigen
+    // Lade gespeicherte Nachrichten beim Seitenaufruf
     window.onload = loadMessages;
 
-    // Beim Abschicken des Formulars Nachricht versenden
+    // Beim Absenden des Formulars: Nachricht senden
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const text = messageInput.value.trim();
@@ -88,9 +88,8 @@
         message: text,
         timestamp: Date.now()
       };
-      // Sende Nachricht an den Server
       socket.emit('chat message', messageData);
-      // Eigene Nachricht direkt anzeigen (keine Doppelanzeige)
+      // Eigene Nachricht sofort anzeigen
       appendMessage(messageData);
       saveMessage(messageData);
       messageInput.value = '';
@@ -98,7 +97,7 @@
 
     // Beim Empfang einer Nachricht vom Server
     socket.on('chat message', (data) => {
-      // Eigene Nachricht wurde bereits angezeigt – überspringen
+      // Eigene Nachricht wurde bereits lokal angezeigt
       if (data.senderId === mySocketId) return;
       appendMessage(data);
       saveMessage(data);
